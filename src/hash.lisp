@@ -13,9 +13,9 @@
 
 (defmacro deflookup-table
     (name &key (var    (make-lookup-name name "*" name "*"))
-               (reader (make-lookup-name name "get-" name))
-               (writer (make-lookup-name name "get-" name))
-               (rem-er (make-lookup-name name "rem-" name))
+               (reader (make-lookup-name name (symbol-name :get-) name))
+               (writer (make-lookup-name name (symbol-name :get-) name))
+               (rem-er (make-lookup-name name (symbol-name :rem-) name))
                (at-redefinition :warn)
                (documentation
                 (format nil "Global var for the ~S lookup table" name))
