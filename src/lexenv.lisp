@@ -257,11 +257,11 @@
       
 ;;;; ** LispWorks
 
-#+(and lispworks macosx)
+#+(or lispworks5 lispworks6)
 (defmethod environment-p ((environment system::augmented-environment))
   t)
 
-#+(and lispworks macosx)
+#+(or lispworks5 lispworks6)
 (defmethod lexical-variables ((environment system::augmented-environment))
   (mapcar (lambda (venv)
             (slot-value venv 'compiler::name))
@@ -271,7 +271,7 @@
                        (slot-value venv 'compiler::kind))
                      (slot-value environment 'compiler::venv))))
 
-#+(and lispworks macosx)
+#+(or lispworks5 lispworks6)
 (defmethod lexical-functions ((environment system::augmented-environment))
   (mapcar #'car
           (remove-if (lambda (fenv)
@@ -279,11 +279,11 @@
                        (eql 'compiler::macro (slot-value (cdr fenv) 'compiler::function-or-macro)))
                      (slot-value environment 'compiler::fenv))))
 
-#+(and lispworks macosx)
+#+(or lispworks5 lispworks6)
 (defmethod environment-p ((environment compiler::environment))
   t)
 
-#+(and lispworks macosx)
+#+(or lispworks5 lispworks6)
 (defmethod lexical-variables ((environment compiler::environment))
   (mapcar (lambda (venv)
             (slot-value venv 'compiler::name))
@@ -293,7 +293,7 @@
                        (slot-value venv 'compiler::kind))
                      (slot-value environment 'compiler::venv))))
 
-#+(and lispworks macosx)
+#+(or lispworks5 lispworks6)
 (defmethod lexical-functions ((environment compiler::environment))
   (mapcar #'car
           (remove-if (lambda (fenv)
@@ -301,35 +301,35 @@
                        (macro-function (car fenv) environment))
                      (slot-value environment 'compiler::fenv))))
 
-#+(and lispworks (or win32 linux))
+#+lispworks4
 (defmethod environment-p ((environment lexical::environment))
   t)
 
-#+(and lispworks (or win32 linux))
+#+lispworks4
 (defun lexical-runtime-p (value)
   (and (symbolp value)
        (eq (symbol-package value) nil)))
 
-#+(and lispworks (or win32 linux))
+#+lispworks4
 (defmethod lexical-variables ((environment lexical::environment))
   (loop for candidate in (slot-value environment 'lexical::variables)
         if (lexical-runtime-p (cdr candidate))
         collect (car candidate)))
 
-#+(and lispworks (or win32 linux))
+#+lispworks4
 (defmethod lexical-functions ((environment lexical::environment))
   (loop for candidate in (slot-value environment 'lexical::functions)
         if (lexical-runtime-p (cdr candidate))
         collect (car candidate)))
 
 
-#+(and lispworks (or win32 linux))
+#+lispworks4
 (defmethod lexical-symbol-macros ((environment lexical::environment))
   (loop for candidate in (slot-value environment 'lexical::variables)
         unless (lexical-runtime-p (cdr candidate))
         collect candidate))
 
-#+(and lispworks (or win32 linux))
+#+lispworks4
 (defmethod lexical-macros ((environment lexical::environment))
   (loop for candidate in (slot-value environment 'lexical::functions)
         unless (lexical-runtime-p (cdr candidate))
@@ -483,22 +483,22 @@
 				  (system::make-symbol-macro def))))
 
 
-#+(and lispworks (or win32 linux))
+#+lispworks4
 (defmethod augment-with-variable ((env lexical::environment) var)
   (harlequin-common-lisp:augment-environment
    env :variable (list var)))
 
-#+(and lispworks (or win32 linux))
+#+lispworks4
 (defmethod augment-with-function ((env lexical::environment) fun)
   (harlequin-common-lisp:augment-environment
    env :function (list fun)))
 
-#+(and lispworks (or win32 linux))
+#+lispworks4
 (defmethod augment-with-macro ((env lexical::environment) mac def)
   (harlequin-common-lisp:augment-environment
    env :macro (list (list mac def))))
 
-#+(and lispworks (or win32 linux))
+#+lispworks4
 (defmethod augment-with-symbol-macro ((env lexical::environment) symmac def)
   (harlequin-common-lisp:augment-environment
    env :symbol-macro (list (list symmac def))))
