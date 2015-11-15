@@ -241,7 +241,7 @@
 	(setf (symbol-value var) value)
 	(multiple-value-bind (dummies vals new setter getter)
 	    (get-setf-expansion var)
-
+          (declare (ignorable getter))
 	  (funcall 
 	   (compile nil 
 		    `(lambda () 
