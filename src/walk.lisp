@@ -28,6 +28,7 @@
     (cons walk-env lexical-env)))
 
 (defun register-walk-env (env type name datum &rest other-datum)
+  (declare (ignorable other-datum))
   (let ((walk-env (register (car env) type name datum))
 	(lexenv (case type
 		  (:let (augment-with-variable (cdr env) name))
@@ -447,6 +448,7 @@
     func))
 
 (defun walk-lambda-list (lambda-list parent env &key allow-specializers macro-p)
+  (declare (ignorable macro-p))
   (flet ((extend-env (argument)
            (unless (typep argument 'allow-other-keys-function-argument-form)
              (extend-walk-env env :let (name argument) argument))))
@@ -745,15 +747,19 @@
 
 ;;;; LOAD-TIME-VALUE
 
-(defclass load-time-value-form (form)
-  ((value :accessor value)
-   (read-only-p :accessor read-only-p)))
+;;; Comment out these because it is redefined at the end of the file. SBCL does
+;;; not complain. I assume it just overrides this definition with the new one.
+;;; CCL gives a compilation failure.
 
-(defwalker-handler load-time-value (form parent env)
-  (with-form-object (load-time-value load-time-value-form
-                                     :parent parent :source form)
-    (setf (value load-time-value) (walk-form (second form) load-time-value env)
-          (read-only-p load-time-value) (third form))))
+;; (defclass load-time-value-form (form)
+;;   ((value :accessor value)
+;;    (read-only-p :accessor read-only-p)))
+
+;; (defwalker-handler load-time-value (form parent env)
+;;   (with-form-object (load-time-value load-time-value-form
+;;                                      :parent parent :source form)
+;;     (setf (value load-time-value) (walk-form (second form) load-time-value env)
+;;           (read-only-p load-time-value) (third form))))
 
 ;;;; LOCALLY
 
